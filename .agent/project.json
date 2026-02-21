@@ -1,0 +1,24 @@
+{
+  "ide_detection": {},
+  "skill_discovery": {},
+  "ai_routing": {},
+  "performance": {
+    "parallel_processing": true,
+    "ai_acceleration": true,
+    "cache_ai_responses": true,
+    "file_system_watcher": true,
+    "spotlight_integration": true,
+    "cache_size": 200
+  },
+  "security": {},
+  "logging": {},
+  "integration": {
+    "ide_type": "windsurf",
+    "ide_name": "Windsurf",
+    "platform": "Darwin",
+    "file_operations": "enhanced",
+    "command_palette": "windsurf",
+    "extension_api": "vscode-compatible",
+    "ai_features": "native"
+  }
+}
