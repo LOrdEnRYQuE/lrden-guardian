@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRDEnE Guardian</title>
+    <style>
+        /* Enhanced Browser Extension Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 400px;
+            color: #1f2937;
+        }
+        
+        .popup-container {
+            width: 380px;
+            min-height: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .popup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .popup-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+        }
+        
+        .popup-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .popup-header .subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .popup-body {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-field::placeholder {
+            color: #9ca3af;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-icon {
+            font-size: 16px;
+        }
+        
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: 360deg); }
+        }
+        
+        .results-container {
+            margin-top: 16px;
+        }
+        
+        .result-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .result-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-safe {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .status-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .result-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+        
+        .result-score {
+            font-size: 12px;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .result-summary {
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.4;
+            margin: 8px 0;
+        }
+        
+        .result-issues,
+        .result-recommendations {
+            margin-top: 12px;
+        }
+        
+        .issue-item,
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #374151;
+            line-height: 1.4;
+        }
+        
+        .issue-item i,
+        .recommendation-item i {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        .recommendation-item i {
+            color: #3b82f6;
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .quick-btn {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .quick-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .quick-btn i {
+            font-size: 14px;
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                color: #f1f5f9;
+            }
+            
+            .popup-container {
+                background: #1e293b;
+                border-color: #334155;
+            }
+            
+            .input-field {
+                background: #374151;
+                border-color: #4b5563;
+                color: #f1f5f9;
+            }
+            
+            .input-field::placeholder {
+                color: #9ca3af;
+            }
+            
+            .btn-secondary {
+                background: #374151;
+                border-color: #4b5563;
+                color: #f1f5f9;
+            }
+            
+            .btn-secondary:hover {
+                background: #4b5563;
+            }
+            
+            .result-card {
+                background: #374151;
+                border-color: #4b5563;
+            }
+            
+            .result-title {
+                color: #f1f5f9;
+            }
+            
+            .result-score,
+            .result-summary {
+                color: #cbd5e1;
+            }
+            
+            .stat-item {
+                background: #374151;
+            }
+            
+            .stat-value {
+                color: #f1f5f9;
+            }
+            
+            .stat-label {
+                color: #9ca3af;
+            }
+        }
+        
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        /* Responsive */
+        @media (max-width: 400px) {
+            .popup-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .popup-body {
+                max-height: calc(100vh - 120px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="popup-container">
+        <div class="popup-header">
+            <h1>
+                <i class="ri-shield-check-line"></i>
+                LRDEnE Guardian
+            </h1>
+            <div class="subtitle">AI Safety Analysis</div>
+        </div>
+        
+        <div class="popup-body">
+            <!-- Input Section -->
+            <div class="input-group">
+                <label for="contentInput" class="input-label">Enter or paste content to analyze</label>
+                <textarea 
+                    id="contentInput" 
+                    class="input-field" 
+                    rows="4" 
+                    placeholder="Type or paste your content here..."
+                    maxlength="5000"
+                ></textarea>
+            </div>
+            
+            <!-- Options -->
+            <div class="input-group">
+                <label class="input-label">Analysis Options</label>
+                <div class="flex gap-2">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="deepAnalysis" checked>
+                        <span class="text-sm">Deep Analysis</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="checkSources">
+                        <span class="text-sm">Check Sources</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Analyze Button -->
+            <button id="analyzeBtn" class="btn btn-primary">
+                <i class="ri-search-line btn-icon"></i>
+                Analyze
+            </button>
+            
+            <!-- Results Section -->
+            <div id="resultsContainer" class="results-container hidden">
+                <!-- Results will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="quick-btn" id="clearBtn">
+                <i class="ri-close-circle-line"></i>
+                Clear
+            </button>
+            <button class="quick-btn" id="demoBtn">
+                <i class="ri-magic-line"></i>
+                Demo
+            </button>
+            <button class="quick-btn" id="settingsBtn">
+                <i class="ri-settings-3-line"></i>
+                Settings
+            </button>
+        </div>
+    </div>
+    
+    <script src="enhanced-popup.js"></script>
+</body>
+</html>
