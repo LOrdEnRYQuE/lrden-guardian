@@ -18,6 +18,7 @@ from pathlib import Path
 
 from .guardian import LRDEnEGuardian, LRDEnEGuardianResult
 from .licensing import license_manager, LicenseTier, FeatureType
+from .analytics import AnalyticsEngine
 
 @dataclass
 class EnterpriseConfig:
@@ -78,6 +79,7 @@ class LRDEnEEnterprise:
         # Enterprise components
         self.audit_logs: List[AuditLog] = []
         self.usage_metrics = UsageMetrics()
+        self.analytics = AnalyticsEngine()
         self.custom_validators: Dict[str, Callable] = {}
         self.webhooks: Dict[str, str] = {}
         
@@ -154,6 +156,18 @@ class LRDEnEEnterprise:
             
             # Update metrics
             self._update_metrics(result, processing_time)
+            
+            # Log to Advanced Analytics
+            self.analytics.log_analysis(
+                result=result,
+                user_id=user_id,
+                processing_time=processing_time,
+                metadata={
+                    **metadata,
+                    "content_hash": audit_log.content_hash,
+                    "guardian_version": self.guardian.version
+                }
+            )
             
             # Store audit log
             if self.config.audit_logging:

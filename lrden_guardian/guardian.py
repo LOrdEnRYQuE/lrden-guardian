@@ -33,6 +33,7 @@ from enum import Enum
 from .enhanced_knowledge_base import EnhancedKnowledgeBase
 from .enhanced_risk_calculator import EnhancedRiskCalculator  
 from .security_analyzer import SecurityAnalyzer
+from .i18n import locale_manager, _
 
 class LRDEnEValidationType(Enum):
     """LRDEnE Guardian validation types"""
@@ -96,13 +97,16 @@ class LRDEnEGuardian:
     enterprise AI applications.
     """
     
-    def __init__(self, license_key: str = None):
+    def __init__(self, license_key: str = None, locale: str = "en"):
         """
         Initialize LRDEnE Guardian
         
         Args:
             license_key: Optional LRDEnE license key for premium features
+            locale: The preferred locale for analysis results and recommendations
         """
+        self.locale = locale
+        locale_manager.set_locale(locale)
         # LRDEnE Brand Identity
         self.brand = "LRDEnE"
         self.product_name = "LRDEnE Guardian"
@@ -133,17 +137,23 @@ class LRDEnEGuardian:
         self._guardian_initialized = datetime.now()
         self._analytics_enabled = True
     
-    def analyze_content(self, content: str, context: Dict[str, Any] = None) -> LRDEnEGuardianResult:
+    def analyze_content(self, content: str, context: Dict[str, Any] = None, locale: Optional[str] = None) -> LRDEnEGuardianResult:
         """
         Analyze content with LRDEnE Guardian
         
         Args:
             content: Content to analyze
             context: Optional context for analysis
+            locale: Optional locale to override the default for this analysis
             
         Returns:
             LRDEnEGuardianResult: Comprehensive safety analysis
         """
+        if locale:
+            locale_manager.set_locale(locale)
+        elif self.locale:
+            locale_manager.set_locale(self.locale)
+
         context = context or {}
         
         # LRDEnE Guardian Analysis Pipeline
@@ -637,30 +647,32 @@ class LRDEnEGuardian:
             'brand': self.brand,
             'product_name': self.product_name,
             'version': self.version,
+            'locale': self.locale,
             'guardian_initialized': self._guardian_initialized.isoformat(),
             'license_key': '***' if self.license_key else None,
             'analytics_enabled': self._analytics_enabled,
             'capabilities': [
-                'Advanced hallucination detection',
-                'Multi-layered content validation',
-                'Real-time safety analysis',
-                'Proprietary confidence scoring',
-                'Enterprise-grade security analysis'
+                _('Advanced hallucination detection'),
+                _('Multi-layered content validation'),
+                _('Real-time safety analysis'),
+                _('Proprietary confidence scoring'),
+                _('Enterprise-grade security analysis')
             ]
         }
 
 # LRDEnE Guardian Factory
-def create_lrden_guardian(license_key: str = None) -> LRDEnEGuardian:
+def create_lrden_guardian(license_key: str = None, locale: str = "en") -> LRDEnEGuardian:
     """
     Factory function to create LRDEnE Guardian instance
     
     Args:
         license_key: Optional LRDEnE license key
+        locale: Optional locale preference
         
     Returns:
         LRDEnEGuardian: Configured Guardian instance
     """
-    return LRDEnEGuardian(license_key=license_key)
+    return LRDEnEGuardian(license_key=license_key, locale=locale)
 
 # LRDEnE Guardian Demo
 if __name__ == "__main__":

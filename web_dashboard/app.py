@@ -41,12 +41,13 @@ def analyze_content():
         data = request.get_json()
         content = data.get('content', '')
         context = data.get('context', {})
+        locale = request.args.get('locale') or data.get('locale')
         
         if not content.strip():
             return jsonify({'error': 'Content cannot be empty'}), 400
         
         # Analyze content
-        result = guardian.analyze_content(content, context)
+        result = guardian.analyze_content(content, context, locale=locale)
         
         # Format response
         response = {
@@ -58,6 +59,7 @@ def analyze_content():
             'recommendations': result.recommendations,
             'detected_issues': result.detected_issues,
             'uncertainty_areas': result.uncertainty_areas,
+            'locale': locale or guardian.locale,
             'timestamp': datetime.now().isoformat()
         }
         
