@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  # LRDEnE Guardian Web Dashboard
+  guardian-dashboard:
+    build:
+      context: ../web_dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=production
+    volumes:
+      - guardian_uploads:/app/uploads
+    networks:
+      - guardian-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/api-info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # WordPress Integration
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: guardian
+      WORDPRESS_DB_PASSWORD: guardian_password
+      WORDPRESS_DB_NAME: guardian_wp
+      WORDPRESS_CONFIG_EXTRA: |
+        define('LRDEN_GUARDIAN_API_ENDPOINT', 'http://guardian-dashboard:5001');
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wordpress/lrden-guardian-wordpress.php:/var/www/html/wp-content/plugins/lrden-guardian-wordpress.php
+    depends_on:
+      - guardian-dashboard
+      - wordpress-db
+    networks:
+      - guardian-network
+    restart: unless-stopped
+
+  # WordPress Database
+  wordpress-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: guardian_wp
+      MYSQL_USER: guardian
+      MYSQL_PASSWORD: guardian_password
+    volumes:
+      - wordpress_db_data:/var/lib/mysql
+    networks:
+      - guardian-network
+    restart: unless-stopped
+
+  # Slack Integration
+  slack-integration:
+    build:
+      context: ./slack
+      dockerfile: Dockerfile
+    environment:
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN}
+      - LRDEN_GUARDIAN_API_ENDPOINT=http://guardian-dashboard:5001
+    depends_on:
+      - guardian-dashboard
+    networks:
+      - guardian-network
+    restart: unless-stopped
+    profiles:
+      - slack
+
+  # Discord Integration
+  discord-integration:
+    build:
+      context: ./discord
+      dockerfile: Dockerfile
+    environment:
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - LRDEN_GUARDIAN_API_ENDPOINT=http://guardian-dashboard:5001
+    depends_on:
+      - guardian-dashboard
+    networks:
+      - guardian-network
+    restart: unless-stopped
+    profiles:
+      - discord
+
+  # Redis for caching
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - guardian-network
+    restart: unless-stopped
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - guardian-dashboard
+      - wordpress
+    networks:
+      - guardian-network
+    restart: unless-stopped
+
+volumes:
+  guardian_uploads:
+  wordpress_data:
+  wordpress_db_data:
+  redis_data:
+
+networks:
+  guardian-network:
+    driver: bridge
