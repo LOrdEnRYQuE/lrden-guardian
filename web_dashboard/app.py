@@ -30,9 +30,19 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 guardian = create_lrden_guardian()
 
 @app.route('/')
-def index():
-    """Main dashboard page"""
+def landing():
+    """Marketing Landing Page (Commercial Entry)"""
+    return render_template('marketing/landing_page.html')
+
+@app.route('/dashboard')
+def dashboard():
+    """Main application dashboard"""
     return render_template('index.html')
+
+@app.route('/customer-portal')
+def customer_portal():
+    """Customer account and API management"""
+    return render_template('dashboard/customer_dashboard.html')
 
 @app.route('/analyze', methods=['POST'])
 def analyze_content():
@@ -134,8 +144,13 @@ def demo():
 
 @app.route('/docs')
 def docs():
-    """API documentation page"""
-    return render_template('docs.html')
+    """API documentation and sandbox"""
+    return render_template('docs/api_sandbox.html')
+
+@app.route('/analytics')
+def analytics():
+    """Enterprise analytics dashboard"""
+    return render_template('analytics_dashboard.html')
 
 if __name__ == '__main__':
     print("🛡️ Starting LRDEnE Guardian Web Dashboard...")

@@ -1,72 +1,37 @@
-# 🛡️ LRDEnE Guardian - Docker Image
-# Copyright (c) 2026 LRDEnE. All rights reserved.
+# LRDEnE Guardian - Commercial Deployment
+# ======================================
 
 FROM python:3.11-slim
 
-# Set metadata
-LABEL maintainer="LRDEnE Technology Team <tech@lrden.com>"
-LABEL description="LRDEnE Guardian - Advanced AI Safety & Hallucination Detection System"
-LABEL version="1.0.0"
-LABEL license="MIT"
-
-# Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    LRDEN_GUARDIAN_VERSION="1.0.0" \
-    LRDEN_GUARDIAN_HOME="/app"
-
-# Create app directory
-WORKDIR $LRDEN_GUARDIAN_HOME
+WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
+    build-essential \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
+# Copy requirements and install
 COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
 
-# Install LRDEnE Guardian
-RUN pip install -e .
+# Create necessary directories
+RUN mkdir -p uploads lrden_guardian/locales
 
-# Create non-root user for security
-RUN useradd --create-home --shell /bin/bash lrden && \
-    chown -R lrden:lrden $LRDEN_GUARDIAN_HOME
-USER lrden
+# Set environment variables
+ENV FLASK_APP=web_dashboard/app.py
+ENV FLASK_ENV=production
+ENV PYTHONUNBUFFERED=1
 
-# Create directories for data and logs
-RUN mkdir -p $LRDEN_GUARDIAN_HOME/data $LRDEN_GUARDIAN_HOME/logs
+# Expose ports
+EXPOSE 5001
 
-# Expose port for API (if implemented)
-EXPOSE 8000
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:5001/api-info || exit 1
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD lrden-guardian info || exit 1
-
-# Default command
-CMD ["lrden-guardian", "--help"]
-
-# Build arguments
-ARG BUILD_DATE
-ARG VCS_REF
-ARG VERSION
-
-# Labels for build info
-LABEL org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.name="LRDEnE Guardian" \
-      org.label-schema.description="Advanced AI Safety & Hallucination Detection System" \
-      org.label-schema.url="https://github.com/LRDEnE/lrden-guardian" \
-      org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.vcs-url="https://github.com/LRDEnE/lrden-guardian.git" \
-      org.label-schema.vendor="LRDEnE" \
-      org.label-schema.version=$VERSION \
-      org.label-schema.schema-version="1.0"
+# Start application
+CMD ["python", "web_dashboard/app.py"]

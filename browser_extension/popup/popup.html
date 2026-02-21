@@ -1,301 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRDEnE Guardian</title>
-    <style>
-        body {
-            width: 380px;
-            min-height: 500px;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        
-        .logo i {
-            font-size: 32px;
-            margin-right: 10px;
-        }
-        
-        .logo h1 {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0;
-        }
-        
-        .status {
-            padding: 10px 20px;
-            text-align: center;
-            font-size: 14px;
-        }
-        
-        .safe {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-        
-        .warning {
-            background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
-        }
-        
-        .danger {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        }
-        
-        .content {
-            padding: 20px;
-        }
-        
-        .analyze-section {
-            margin-bottom: 20px;
-        }
-        
-        .text-input {
-            width: 100%;
-            min-height: 80px;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            resize: vertical;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            backdrop-filter: blur(10px);
-        }
-        
-        .text-input::placeholder {
-            color: rgba(255,255,255,0.7);
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        
-        .btn-primary {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        
-        .btn-primary:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-1px);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .results {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            display: none;
-        }
-        
-        .results.show {
-            display: block;
-        }
-        
-        .metric {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .metric:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-        
-        .metric-label {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-        
-        .metric-value {
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .issues, .recommendations {
-            margin-top: 15px;
-        }
-        
-        .issues h4, .recommendations h4 {
-            font-size: 12px;
-            margin-bottom: 8px;
-            opacity: 0.9;
-        }
-        
-        .issues ul, .recommendations ul {
-            margin: 0;
-            padding-left: 20px;
-            font-size: 12px;
-        }
-        
-        .issues li {
-            margin-bottom: 5px;
-            color: #ff6b6b;
-        }
-        
-        .recommendations li {
-            margin-bottom: 5px;
-            color: #4ecdc4;
-        }
-        
-        .footer {
-            padding: 15px 20px;
-            text-align: center;
-            font-size: 11px;
-            opacity: 0.8;
-            border-top: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .spinner {
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .settings-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 5px;
-            border-radius: 4px;
-            transition: background 0.3s ease;
-        }
-        
-        .settings-btn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-    </style>
+  <style>
+    body {
+      width: 320px;
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #f1f5f9;
+      font-family: 'Outfit', sans-serif;
+    }
+    .container {
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .logo {
+      width: 28px;
+      height: 28px;
+      background: #10b981;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #020617;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .status-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .status-label { font-size: 13px; color: #94a3b8; }
+    .status-value { font-size: 13px; font-weight: 600; color: #10b981; }
+    
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .input-label {
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 8px;
+      display: block;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: white;
+      font-size: 13px;
+      outline: none;
+    }
+    input:focus { border-color: #10b981; }
+    
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #10b981;
+      border: none;
+      border-radius: 10px;
+      color: #020617;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover { background: #34d399; }
+    
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .footer a { color: #10b981; text-decoration: none; }
+  </style>
 </head>
 <body>
+  <div class="container">
     <div class="header">
-        <button class="settings-btn" id="settingsBtn" title="Settings">
-            <i class="fas fa-cog"></i>
-        </button>
-        <div class="logo">
-            <i class="fas fa-shield-alt"></i>
-            <h1>LRDEnE Guardian</h1>
-        </div>
-        <div class="status" id="status">
-            <i class="fas fa-check-circle"></i>
-            <span>Ready to protect</span>
-        </div>
+      <div class="logo">G</div>
+      <div class="title">LRDEnE Guardian</div>
     </div>
     
-    <div class="content">
-        <div class="analyze-section">
-            <textarea 
-                id="textInput" 
-                class="text-input" 
-                placeholder="Enter text to analyze or select text on webpage..."
-            ></textarea>
-            <button id="analyzeBtn" class="btn btn-primary">
-                <i class="fas fa-search"></i> Analyze Content
-            </button>
-            <button id="analyzeSelectionBtn" class="btn btn-secondary">
-                <i class="fas fa-mouse-pointer"></i> Analyze Selected Text
-            </button>
-        </div>
-        
-        <div id="loadingDiv" class="loading" style="display: none;">
-            <div class="spinner"></div>
-            <p>Analyzing with LRDEnE Guardian...</p>
-        </div>
-        
-        <div id="resultsDiv" class="results">
-            <div class="metric">
-                <span class="metric-label">Safety Status</span>
-                <span class="metric-value" id="safetyStatus">-</span>
-            </div>
-            <div class="metric">
-                <span class="metric-label">Guardian Score</span>
-                <span class="metric-value" id="guardianScore">-</span>
-            </div>
-            <div class="metric">
-                <span class="metric-label">Confidence</span>
-                <span class="metric-value" id="confidenceScore">-</span>
-            </div>
-            <div class="metric">
-                <span class="metric-label">Risk Level</span>
-                <span class="metric-value" id="riskLevel">-</span>
-            </div>
-            
-            <div id="issuesSection" class="issues" style="display: none;">
-                <h4><i class="fas fa-exclamation-triangle"></i> Issues Detected</h4>
-                <ul id="issuesList"></ul>
-            </div>
-            
-            <div id="recommendationsSection" class="recommendations" style="display: none;">
-                <h4><i class="fas fa-lightbulb"></i> Recommendations</h4>
-                <ul id="recommendationsList"></ul>
-            </div>
-        </div>
+    <div class="status-card">
+      <div class="status-row">
+        <span class="status-label">Monitoring</span>
+        <span class="status-value">Active</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Session Trust</span>
+        <span class="status-value">98.4%</span>
+      </div>
     </div>
+    
+    <div class="input-group">
+      <label class="input-label">API Access Key</label>
+      <input type="password" id="apiKey" placeholder="LRDEN-PRO-••••••••">
+    </div>
+    
+    <button id="saveBtn">Save Configuration</button>
     
     <div class="footer">
-        <p>🛡️ LRDEnE Guardian - AI Safety Shield</p>
-        <p>Copyright (c) 2026 LRDEnE. All rights reserved.</p>
+      Managed via <a href="/customer-portal">Customer Portal</a>
     </div>
-    
-    <script src="popup.js"></script>
+  </div>
+  <script src="popup.js"></script>
 </body>
 </html>
