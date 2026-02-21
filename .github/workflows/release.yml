@@ -1,0 +1,99 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip build twine
+    
+    - name: Build package
+      run: |
+        python -m build
+    
+    - name: Check package
+      run: |
+        twine check dist/*
+    
+    - name: Generate Release Notes
+      id: release_notes
+      run: |
+        # Extract version from tag
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        
+        # Create release notes
+        cat > release_notes.md << EOF
+        # 🛡️ LRDEnE Guardian v$VERSION
+        
+        ## 🚀 What's New
+        - Advanced AI safety and hallucination detection
+        - Proprietary Guardian scoring algorithm
+        - Enterprise-grade licensing system
+        - CLI tools for easy integration
+        - Sub-10ms processing time
+        
+        ## 📦 Installation
+        \`\`\`bash
+        pip install lrden-guardian==$VERSION
+        \`\`\`
+        
+        ## 🛡️ Quick Start
+        \`\`\`bash
+        lrden-init
+        lrden-guardian analyze "Your content here"
+        \`\`\`
+        
+        ## 📚 Documentation
+        - [Installation Guide](https://github.com/LRDEnE/lrden-guardian/blob/main/DEPLOYMENT.md)
+        - [API Reference](https://github.com/LRDEnE/lrden-guardian/wiki)
+        - [Business Features](https://github.com/LRDEnE/lrden-guardian/blob/main/BUSINESS_LAUNCH_PLAN.md)
+        
+        ---
+        🛡️ LRDEnE Guardian - Your AI Safety Partner
+        Copyright (c) 2026 LRDEnE. All rights reserved.
+        EOF
+        
+        echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+        cat release_notes.md >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: LRDEnE Guardian ${{ steps.release_notes.outputs.version }}
+        body: ${{ steps.release_notes.outputs.release_notes }}
+        files: |
+          dist/*
+          README.md
+          LICENSE
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+    
+    - name: Announce Release
+      run: |
+        echo "🎉 LRDEnE Guardian v${{ steps.release_notes.outputs.version }} released!"
+        echo "📦 Available on PyPI: pip install lrden-guardian==${{ steps.release_notes.outputs.version }}"
+        echo "🛡️ GitHub: https://github.com/LRDEnE/lrden-guardian"

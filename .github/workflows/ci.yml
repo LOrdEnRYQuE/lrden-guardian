@@ -142,7 +142,7 @@ jobs:
     - name: Run security scan
       uses: PyCQA/bandit-action@v1
       with:
-        config_file: .bandit
+        config: .bandit
     
     - name: Run dependency security scan
       run: |
