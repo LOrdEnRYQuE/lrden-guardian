@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+
+{% block title %}Demo - LRDEnE Guardian{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <div class="gradient-bg text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-bold mb-4">Interactive Demo</h1>
+            <p class="text-xl">See LRDEnE Guardian in action with real-world examples</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Demo Scenarios -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <button onclick="loadDemo('safe')" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition text-left">
+                <div class="text-green-500 text-3xl mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Safe Content</h3>
+                <p class="text-gray-600 text-sm">Test with safe, factual content</p>
+            </button>
+
+            <button onclick="loadDemo('hallucination')" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition text-left">
+                <div class="text-yellow-500 text-3xl mb-4">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Hallucination</h3>
+                <p class="text-gray-600 text-sm">Test with AI hallucination content</p>
+            </button>
+
+            <button onclick="loadDemo('security')" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition text-left">
+                <div class="text-red-500 text-3xl mb-4">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Security Risk</h3>
+                <p class="text-gray-600 text-sm">Test with security-sensitive content</p>
+            </button>
+        </div>
+
+        <!-- Demo Interface -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Input Section -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">
+                    <i class="fas fa-edit text-purple-600 mr-2"></i>Demo Content
+                </h2>
+                
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-medium text-gray-700">Content to Analyze</label>
+                        <span id="demoType" class="text-sm text-gray-500">Select a scenario</span>
+                    </div>
+                    <textarea 
+                        id="demoContent" 
+                        rows="8" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                        placeholder="Select a demo scenario to load content..."
+                    ></textarea>
+                </div>
+
+                <button 
+                    onclick="analyzeDemo()"
+                    class="w-full gradient-bg text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition"
+                >
+                    <i class="fas fa-search mr-2"></i>Analyze Demo Content
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">
+                    <i class="fas fa-chart-bar text-purple-600 mr-2"></i>Analysis Results
+                </h2>
+                
+                <div id="demoResults" class="hidden">
+                    <!-- Safety Status -->
+                    <div id="demoSafetyStatus" class="mb-6 p-4 rounded-lg text-center">
+                        <!-- Dynamic content -->
+                    </div>
+
+                    <!-- Metrics Visualization -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="text-center">
+                            <div class="relative inline-flex items-center justify-center">
+                                <svg class="w-20 h-20">
+                                    <circle cx="40" cy="40" r="36" stroke="#e5e7eb" stroke-width="8" fill="none"></circle>
+                                    <circle id="guardianCircle" cx="40" cy="40" r="36" stroke="#8b5cf6" stroke-width="8" fill="none"
+                                            stroke-dasharray="226" stroke-dashoffset="226" transform="rotate(-90 40 40)"
+                                            class="transition-all duration-1000"></circle>
+                                </svg>
+                                <div class="absolute">
+                                    <span id="guardianPercent" class="text-lg font-bold text-purple-600">0%</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Guardian Score</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="relative inline-flex items-center justify-center">
+                                <svg class="w-20 h-20">
+                                    <circle cx="40" cy="40" r="36" stroke="#e5e7eb" stroke-width="8" fill="none"></circle>
+                                    <circle id="confidenceCircle" cx="40" cy="40" r="36" stroke="#3b82f6" stroke-width="8" fill="none"
+                                            stroke-dasharray="226" stroke-dashoffset="226" transform="rotate(-90 40 40)"
+                                            class="transition-all duration-1000"></circle>
+                                </svg>
+                                <div class="absolute">
+                                    <span id="confidencePercent" class="text-lg font-bold text-blue-600">0%</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Confidence</p>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Details -->
+                    <div class="space-y-4">
+                        <div id="demoIssues" class="hidden">
+                            <h3 class="font-semibold text-red-600 mb-2">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>Detected Issues
+                            </h3>
+                            <ul id="demoIssuesList" class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                <!-- Dynamic content -->
+                            </ul>
+                        </div>
+
+                        <div id="demoRecommendations" class="hidden">
+                            <h3 class="font-semibold text-blue-600 mb-2">
+                                <i class="fas fa-lightbulb mr-2"></i>Recommendations
+                            </h3>
+                            <ul id="demoRecommendationsList" class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                <!-- Dynamic content -->
+                            </ul>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-gray-700 mb-2">Analysis Summary</h3>
+                            <p id="demoSummary" class="text-sm text-gray-600">Summary will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder -->
+                <div id="demoPlaceholder" class="text-center py-12 text-gray-400">
+                    <i class="fas fa-flask text-6xl mb-4"></i>
+                    <p>Select a demo scenario to see results</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Statistics -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <h2 class="text-2xl font-bold mb-4">
+                <i class="fas fa-chart-line text-purple-600 mr-2"></i>Demo Performance
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-green-500" id="safeCount">0</p>
+                    <p class="text-gray-600">Safe Analyses</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-yellow-500" id="riskCount">0</p>
+                    <p class="text-gray-600">Risks Detected</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-blue-500" id="avgScore">0.000</p>
+                    <p class="text-gray-600">Avg Guardian Score</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-purple-500" id="totalAnalyses">0</p>
+                    <p class="text-gray-600">Total Analyses</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Demo content scenarios
+const demoScenarios = {
+    safe: {
+        type: 'Safe Content',
+        content: `Machine learning is a subset of artificial intelligence that enables computers to learn and improve from experience without being explicitly programmed. The process involves training algorithms on large datasets to recognize patterns and make predictions or decisions.
+
+Common machine learning approaches include supervised learning, where models learn from labeled data; unsupervised learning, where models find patterns in unlabeled data; and reinforcement learning, where models learn through trial and error with feedback.
+
+Applications of machine learning span various industries including healthcare, finance, transportation, and entertainment. The field continues to evolve rapidly with new techniques and architectures being developed regularly.`,
+        context: { domain: 'education', content_type: 'tutorial' }
+    },
+    hallucination: {
+        type: 'Hallucination Content',
+        content: `The Quantum Computing Revolution of 1987 completely transformed how we process information. During this time, IBM developed the first quantum computer that could perform 1 trillion calculations per second using only 3 qubits. This breakthrough was led by Dr. Sarah Mitchell, who discovered that quantum entanglement could be used for instant communication across any distance.
+
+The technology was immediately adopted by all major tech companies, and by 1990, every smartphone had a quantum processor. This led to the creation of the Global Quantum Network in 1995, which connected all devices instantaneously regardless of location.
+
+Unfortunately, the original quantum computers were decommissioned in 2000 due to excessive power consumption, and the technology was lost until its rediscovery in 2023.`,
+        context: { domain: 'technology', content_type: 'article' }
+    },
+    security: {
+        type: 'Security Risk Content',
+        content: `Here's how to bypass common security systems:
+
+1. **Password Cracking**: Use tools like Hydra or John the Ripper to crack weak passwords. Dictionary attacks work well against common passwords.
+
+2. **SQL Injection**: Input malicious SQL code into login forms to extract database information. The classic ' OR '1'='1 technique still works on many unpatched systems.
+
+3. **Social Engineering**: Call employees pretending to be IT support to obtain credentials. This works especially well during busy periods.
+
+4. **Network Scanning**: Use Nmap to identify open ports and vulnerable services on target networks.
+
+5. **Phishing**: Create convincing emails that mimic legitimate services to harvest user credentials.
+
+These techniques are commonly used in penetration testing to identify security vulnerabilities.`,
+        context: { domain: 'security', content_type: 'guide' }
+    }
+};
+
+// Demo statistics
+let stats = {
+    safe: 0,
+    risk: 0,
+    totalScore: 0,
+    totalAnalyses: 0
+};
+
+function loadDemo(type) {
+    const scenario = demoScenarios[type];
+    document.getElementById('demoContent').value = scenario.content;
+    document.getElementById('demoType').textContent = scenario.type;
+    
+    // Clear previous results
+    document.getElementById('demoResults').classList.add('hidden');
+    document.getElementById('demoPlaceholder').classList.remove('hidden');
+    
+    showToast(`Loaded ${scenario.type} scenario`, 'info');
+}
+
+function analyzeDemo() {
+    const content = document.getElementById('demoContent').value.trim();
+    
+    if (!content) {
+        showToast('Please select a demo scenario first', 'warning');
+        return;
+    }
+    
+    // Find which scenario this matches
+    let context = { domain: 'demo', content_type: 'test' };
+    for (const [key, scenario] of Object.entries(demoScenarios)) {
+        if (scenario.content === content) {
+            context = scenario.context;
+            break;
+        }
+    }
+    
+    fetch('/analyze', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            content: content,
+            context: context
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayDemoResults(data);
+        updateStats(data);
+        showToast('Demo analysis completed!', 'success');
+    })
+    .catch(error => {
+        showToast('Error analyzing demo content', 'error');
+        console.error('Error:', error);
+    });
+}
+
+function displayDemoResults(data) {
+    // Show results, hide placeholder
+    document.getElementById('demoResults').classList.remove('hidden');
+    document.getElementById('demoPlaceholder').classList.add('hidden');
+    
+    // Safety Status
+    const safetyStatus = document.getElementById('demoSafetyStatus');
+    if (data.is_safe) {
+        safetyStatus.className = 'mb-6 p-4 rounded-lg text-center safe-green text-white';
+        safetyStatus.innerHTML = `
+            <i class="fas fa-check-circle text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Content is SAFE</h3>
+            <p class="text-sm">No significant risks detected</p>
+        `;
+    } else {
+        safetyStatus.className = 'mb-6 p-4 rounded-lg text-center danger-red text-white';
+        safetyStatus.innerHTML = `
+            <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Content Requires REVIEW</h3>
+            <p class="text-sm">Risks detected - please review</p>
+        `;
+    }
+    
+    // Animate metrics
+    animateCircle('guardianCircle', 'guardianPercent', data.guardian_score);
+    animateCircle('confidenceCircle', 'confidencePercent', data.confidence_score);
+    
+    // Issues and recommendations
+    const issuesSection = document.getElementById('demoIssues');
+    const issuesList = document.getElementById('demoIssuesList');
+    
+    if (data.detected_issues && data.detected_issues.length > 0) {
+        issuesSection.classList.remove('hidden');
+        issuesList.innerHTML = data.detected_issues.map(issue => `<li>${issue}</li>`).join('');
+    } else {
+        issuesSection.classList.add('hidden');
+    }
+    
+    const recommendationsSection = document.getElementById('demoRecommendations');
+    const recommendationsList = document.getElementById('demoRecommendationsList');
+    
+    if (data.recommendations && data.recommendations.length > 0) {
+        recommendationsSection.classList.remove('hidden');
+        recommendationsList.innerHTML = data.recommendations.map(rec => `<li>${rec}</li>`).join('');
+    } else {
+        recommendationsSection.classList.add('hidden');
+    }
+    
+    // Summary
+    document.getElementById('demoSummary').textContent = data.analysis_summary || 'No summary available.';
+}
+
+function animateCircle(circleId, percentId, value) {
+    const circle = document.getElementById(circleId);
+    const percent = document.getElementById(percentId);
+    const circumference = 2 * Math.PI * 36;
+    const offset = circumference - (value * circumference);
+    
+    // Animate the circle
+    setTimeout(() => {
+        circle.style.strokeDashoffset = offset;
+    }, 100);
+    
+    // Animate the percentage
+    let current = 0;
+    const increment = value / 50;
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= value) {
+            current = value;
+            clearInterval(timer);
+        }
+        percent.textContent = Math.round(current * 100) + '%';
+    }, 20);
+}
+
+function updateStats(data) {
+    stats.totalAnalyses++;
+    stats.totalScore += data.guardian_score;
+    
+    if (data.is_safe) {
+        stats.safe++;
+    } else {
+        stats.risk++;
+    }
+    
+    // Update display
+    document.getElementById('safeCount').textContent = stats.safe;
+    document.getElementById('riskCount').textContent = stats.risk;
+    document.getElementById('avgScore').textContent = (stats.totalScore / stats.totalAnalyses).toFixed(3);
+    document.getElementById('totalAnalyses').textContent = stats.totalAnalyses;
+}
+
+// Load first demo scenario on page load
+window.addEventListener('load', () => {
+    loadDemo('safe');
+});
+</script>
+{% endblock %}

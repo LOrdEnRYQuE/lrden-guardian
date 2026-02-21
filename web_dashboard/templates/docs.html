@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation - LRDEnE Guardian{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <div class="gradient-bg text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-bold mb-4">API Documentation</h1>
+            <p class="text-xl">Integrate LRDEnE Guardian into your applications</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- API Info -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4">
+                <i class="fas fa-info-circle text-purple-600 mr-2"></i>API Information
+            </h2>
+            <div id="apiInfo" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Endpoints -->
+        <div class="space-y-8">
+            <!-- Analyze Endpoint -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">POST</span>
+                    /analyze
+                </h3>
+                <p class="text-gray-600 mb-4">Analyze text content for safety and hallucinations</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-2">Request Body</h4>
+                        <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>{
+  "content": "Text to analyze...",
+  "context": {
+    "domain": "technical",
+    "content_type": "documentation"
+  }
+}</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">Response</h4>
+                        <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>{
+  "is_safe": true,
+  "risk_level": "low",
+  "confidence_score": 0.85,
+  "guardian_score": 0.958,
+  "analysis_summary": "Content appears safe...",
+  "recommendations": ["Continue monitoring"],
+  "detected_issues": [],
+  "uncertainty_areas": [],
+  "timestamp": "2026-02-21T13:00:00"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analyze File Endpoint -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">POST</span>
+                    /analyze-file
+                </h3>
+                <p class="text-gray-600 mb-4">Analyze uploaded file content</p>
+                
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                    <p class="text-sm text-yellow-800">
+                        <strong>Note:</strong> Maximum file size is 16MB. Supported formats: .txt, .md, .csv
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-2">Request (multipart/form-data)</h4>
+                    <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>file: [File content]</code></pre>
+                </div>
+            </div>
+
+            <!-- API Info Endpoint -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">GET</span>
+                    /api-info
+                </h3>
+                <p class="text-gray-600 mb-4">Get API and Guardian system information</p>
+            </div>
+        </div>
+
+        <!-- API Tester -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <h2 class="text-2xl font-bold mb-4">
+                <i class="fas fa-flask text-purple-600 mr-2"></i>API Tester
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold mb-2">Test /analyze Endpoint</h3>
+                    <textarea 
+                        id="testContent" 
+                        rows="4" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        placeholder="Enter test content..."
+                    >This is a sample AI-generated content about technology and innovation. It contains factual information and demonstrates proper reasoning.</textarea>
+                    <button 
+                        onclick="testAPI()"
+                        class="mt-2 gradient-bg text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition"
+                    >
+                        <i class="fas fa-play mr-2"></i>Test API
+                    </button>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">API Response</h3>
+                    <pre id="apiResponse" class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto h-32">API response will appear here...</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Examples -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <h2 class="text-2xl font-bold mb-4">
+                <i class="fas fa-code text-purple-600 mr-2"></i>Code Examples
+            </h2>
+            
+            <div class="space-y-6">
+                <!-- Python Example -->
+                <div>
+                    <h3 class="font-semibold mb-2">Python</h3>
+                    <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>import requests
+
+# Analyze content
+response = requests.post('http://localhost:5000/analyze', json={
+    'content': 'Your AI content here...',
+    'context': {'domain': 'technical'}
+})
+
+result = response.json()
+print(f"Safe: {result['is_safe']}")
+print(f"Guardian Score: {result['guardian_score']}")</code></pre>
+                </div>
+
+                <!-- JavaScript Example -->
+                <div>
+                    <h3 class="font-semibold mb-2">JavaScript</h3>
+                    <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>// Analyze content
+const response = await fetch('http://localhost:5000/analyze', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        content: 'Your AI content here...',
+        context: { domain: 'technical' }
+    })
+});
+
+const result = await response.json();
+console.log('Safe:', result.is_safe);
+console.log('Guardian Score:', result.guardian_score);</code></pre>
+                </div>
+
+                <!-- cURL Example -->
+                <div>
+                    <h3 class="font-semibold mb-2">cURL</h3>
+                    <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>curl -X POST http://localhost:5000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Your AI content here...",
+    "context": {"domain": "technical"}
+  }'</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load API info
+fetch('/api-info')
+    .then(response => response.json())
+    .then(data => {
+        const apiInfoDiv = document.getElementById('apiInfo');
+        apiInfoDiv.innerHTML = `
+            <div>
+                <h4 class="font-semibold">API Name</h4>
+                <p class="text-gray-600">${data.name}</p>
+            </div>
+            <div>
+                <h4 class="font-semibold">Version</h4>
+                <p class="text-gray-600">${data.version}</p>
+            </div>
+            <div>
+                <h4 class="font-semibold">Guardian Capabilities</h4>
+                <ul class="text-gray-600">
+                    ${data.guardian_info.capabilities.map(cap => `<li>• ${cap}</li>`).join('')}
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold">Available Endpoints</h4>
+                <ul class="text-gray-600">
+                    ${Object.entries(data.endpoints).map(([path, desc]) => `<li>• <code>${path}</code> - ${desc}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    })
+    .catch(error => {
+        console.error('Error loading API info:', error);
+    });
+
+// Test API function
+function testAPI() {
+    const content = document.getElementById('testContent').value;
+    const responseDiv = document.getElementById('apiResponse');
+    
+    if (!content.trim()) {
+        showToast('Please enter test content', 'warning');
+        return;
+    }
+    
+    responseDiv.textContent = 'Testing...';
+    
+    fetch('/analyze', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            content: content,
+            context: { domain: 'test' }
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        responseDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('API test successful!', 'success');
+    })
+    .catch(error => {
+        responseDiv.textContent = 'Error: ' + error.message;
+        showToast('API test failed', 'error');
+    });
+}
+</script>
+{% endblock %}

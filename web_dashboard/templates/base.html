@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LRDEnE Guardian - AI Safety Dashboard{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .guardian-gradient {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .safe-green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .risk-orange {
+            background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+        }
+        .danger-red {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-shield-alt text-2xl mr-3"></i>
+                    <span class="font-bold text-xl">LRDEnE Guardian</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="hover:text-gray-200 transition">Dashboard</a>
+                    <a href="/demo" class="hover:text-gray-200 transition">Demo</a>
+                    <a href="/docs" class="hover:text-gray-200 transition">API Docs</a>
+                    <button class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">
+                        <i class="fas fa-rocket mr-2"></i>Launch
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <div class="flex justify-center items-center mb-4">
+                    <i class="fas fa-shield-alt text-3xl mr-3"></i>
+                    <span class="text-xl font-bold">LRDEnE Guardian</span>
+                </div>
+                <p class="text-gray-300">Advanced AI Safety & Hallucination Detection System</p>
+                <p class="text-sm text-gray-400 mt-2">Copyright (c) 2026 LRDEnE. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Common JavaScript functions
+        function showLoading(element) {
+            element.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Analyzing...';
+            element.disabled = true;
+        }
+
+        function hideLoading(element, originalText) {
+            element.innerHTML = originalText;
+            element.disabled = false;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 ${
+                type === 'success' ? 'bg-green-500' :
+                type === 'error' ? 'bg-red-500' :
+                type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+            }`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

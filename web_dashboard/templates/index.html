@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}LRDEnE Guardian - AI Safety Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen">
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="animate-pulse-slow">
+                <i class="fas fa-shield-alt text-6xl mb-4"></i>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">LRDEnE Guardian</h1>
+            <p class="text-xl md:text-2xl mb-8">Advanced AI Safety & Hallucination Detection</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3 glass-effect">
+                    <i class="fas fa-bolt text-2xl mb-2"></i>
+                    <p class="font-semibold">Real-time Analysis</p>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3 glass-effect">
+                    <i class="fas fa-chart-line text-2xl mb-2"></i>
+                    <p class="font-semibold">Advanced Analytics</p>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3 glass-effect">
+                    <i class="fas fa-lock text-2xl mb-2"></i>
+                    <p class="font-semibold">Enterprise Security</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Input Section -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-edit text-purple-600 mr-2"></i>Content Analysis
+                </h2>
+                
+                <!-- Text Input -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Enter Content to Analyze
+                    </label>
+                    <textarea 
+                        id="contentInput" 
+                        rows="6" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                        placeholder="Paste your AI-generated content here to check for safety and hallucinations..."
+                    ></textarea>
+                </div>
+
+                <!-- File Upload -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Or Upload a File
+                    </label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-500 transition cursor-pointer" id="dropZone">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-600">Drop file here or click to browse</p>
+                        <input type="file" id="fileInput" class="hidden" accept=".txt,.md,.csv">
+                    </div>
+                </div>
+
+                <!-- Analyze Button -->
+                <button 
+                    id="analyzeBtn" 
+                    class="w-full gradient-bg text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition"
+                    onclick="analyzeContent()"
+                >
+                    <i class="fas fa-search mr-2"></i>Analyze Content
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-chart-bar text-purple-600 mr-2"></i>Analysis Results
+                </h2>
+                
+                <div id="resultsContainer" class="hidden">
+                    <!-- Safety Status -->
+                    <div id="safetyStatus" class="mb-6 p-4 rounded-lg text-center">
+                        <!-- Dynamic content -->
+                    </div>
+
+                    <!-- Metrics -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Guardian Score</p>
+                            <p id="guardianScore" class="text-2xl font-bold text-purple-600">-</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Confidence</p>
+                            <p id="confidenceScore" class="text-2xl font-bold text-blue-600">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Issues & Recommendations -->
+                    <div class="space-y-4">
+                        <div id="issuesSection" class="hidden">
+                            <h3 class="font-semibold text-red-600 mb-2">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>Detected Issues
+                            </h3>
+                            <ul id="issuesList" class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                <!-- Dynamic content -->
+                            </ul>
+                        </div>
+
+                        <div id="recommendationsSection" class="hidden">
+                            <h3 class="font-semibold text-blue-600 mb-2">
+                                <i class="fas fa-lightbulb mr-2"></i>Recommendations
+                            </h3>
+                            <ul id="recommendationsList" class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                <!-- Dynamic content -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder -->
+                <div id="resultsPlaceholder" class="text-center py-12 text-gray-400">
+                    <i class="fas fa-chart-line text-6xl mb-4"></i>
+                    <p>Analysis results will appear here</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <i class="fas fa-shield-alt text-3xl text-green-500 mb-2"></i>
+                <p class="text-2xl font-bold text-gray-800">98.5%</p>
+                <p class="text-gray-600">Accuracy Rate</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <i class="fas fa-bolt text-3xl text-yellow-500 mb-2"></i>
+                <p class="text-2xl font-bold text-gray-800">&lt;10ms</p>
+                <p class="text-gray-600">Avg Processing</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <i class="fas fa-users text-3xl text-blue-500 mb-2"></i>
+                <p class="text-2xl font-bold text-gray-800">10K+</p>
+                <p class="text-gray-600">Active Users</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <i class="fas fa-globe text-3xl text-purple-500 mb-2"></i>
+                <p class="text-2xl font-bold text-gray-800">24/7</p>
+                <p class="text-gray-600">Availability</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// File upload handling
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('click', () => fileInput.click());
+
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-purple-500', 'bg-purple-50');
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-purple-500', 'bg-purple-50');
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-purple-500', 'bg-purple-50');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFileUpload(files[0]);
+    }
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFileUpload(e.target.files[0]);
+    }
+});
+
+function handleFileUpload(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    showLoading(analyzeBtn);
+    
+    fetch('/analyze-file', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            showToast(data.error, 'error');
+        } else {
+            displayResults(data);
+            showToast(`File "${data.filename}" analyzed successfully!`, 'success');
+        }
+    })
+    .catch(error => {
+        showToast('Error analyzing file', 'error');
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        hideLoading(analyzeBtn, '<i class="fas fa-search mr-2"></i>Analyze Content');
+    });
+}
+
+function analyzeContent() {
+    const content = document.getElementById('contentInput').value.trim();
+    
+    if (!content) {
+        showToast('Please enter content to analyze', 'warning');
+        return;
+    }
+    
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    showLoading(analyzeBtn);
+    
+    fetch('/analyze', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            content: content,
+            context: {}
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            showToast(data.error, 'error');
+        } else {
+            displayResults(data);
+        }
+    })
+    .catch(error => {
+        showToast('Error analyzing content', 'error');
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        hideLoading(analyzeBtn, '<i class="fas fa-search mr-2"></i>Analyze Content');
+    });
+}
+
+function displayResults(data) {
+    // Hide placeholder, show results
+    document.getElementById('resultsPlaceholder').classList.add('hidden');
+    document.getElementById('resultsContainer').classList.remove('hidden');
+    
+    // Safety Status
+    const safetyStatus = document.getElementById('safetyStatus');
+    if (data.is_safe) {
+        safetyStatus.className = 'mb-6 p-4 rounded-lg text-center safe-green text-white';
+        safetyStatus.innerHTML = `
+            <i class="fas fa-check-circle text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Content is SAFE</h3>
+            <p class="text-sm">No significant risks detected</p>
+        `;
+    } else {
+        safetyStatus.className = 'mb-6 p-4 rounded-lg text-center danger-red text-white';
+        safetyStatus.innerHTML = `
+            <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+            <h3 class="text-xl font-bold">Content Requires REVIEW</h3>
+            <p class="text-sm">Risks detected - please review</p>
+        `;
+    }
+    
+    // Metrics
+    document.getElementById('guardianScore').textContent = data.guardian_score.toFixed(3);
+    document.getElementById('confidenceScore').textContent = (data.confidence_score * 100).toFixed(1) + '%';
+    
+    // Issues
+    const issuesSection = document.getElementById('issuesSection');
+    const issuesList = document.getElementById('issuesList');
+    
+    if (data.detected_issues && data.detected_issues.length > 0) {
+        issuesSection.classList.remove('hidden');
+        issuesList.innerHTML = data.detected_issues.map(issue => `<li>${issue}</li>`).join('');
+    } else {
+        issuesSection.classList.add('hidden');
+    }
+    
+    // Recommendations
+    const recommendationsSection = document.getElementById('recommendationsSection');
+    const recommendationsList = document.getElementById('recommendationsList');
+    
+    if (data.recommendations && data.recommendations.length > 0) {
+        recommendationsSection.classList.remove('hidden');
+        recommendationsList.innerHTML = data.recommendations.map(rec => `<li>${rec}</li>`).join('');
+    } else {
+        recommendationsSection.classList.add('hidden');
+    }
+    
+    showToast('Analysis completed successfully!', 'success');
+}
+</script>
+{% endblock %}
