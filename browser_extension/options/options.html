@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRDEnE Guardian - Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: normal;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            box-shadow: 0 5px 20px rgba(108, 117, 125, 0.4);
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .sites-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .site-tag {
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .site-tag button {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .site-tag button:hover {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .add-site {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .add-site input {
+            flex: 1;
+        }
+        
+        .add-site button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-shield-alt"></i>
+                LRDEnE Guardian Settings
+            </h1>
+            <p>Configure your AI safety protection preferences</p>
+        </div>
+        
+        <div id="statusMessage" class="status"></div>
+        
+        <div class="card">
+            <h2>
+                <i class="fas fa-cog"></i>
+                General Settings
+            </h2>
+            
+            <div class="form-group">
+                <label for="apiEndpoint">API Endpoint</label>
+                <input type="url" id="apiEndpoint" placeholder="http://localhost:5001">
+                <small style="color: #6c757d; display: block; margin-top: 5px;">
+                    URL of your LRDEnE Guardian API server
+                </small>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="autoAnalyze">
+                <label for="autoAnalyze">Auto-analyze content on paste</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="showNotifications">
+                <label for="showNotifications">Show notifications for warnings</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="realTimeProtection">
+                <label for="realTimeProtection">Enable real-time protection</label>
+            </div>
+            
+            <button class="btn" onclick="saveSettings()">Save Settings</button>
+            <button class="btn btn-secondary" onclick="testConnection()">Test Connection</button>
+        </div>
+        
+        <div class="card">
+            <h2>
+                <i class="fas fa-globe"></i>
+                Protected Sites
+            </h2>
+            
+            <p style="margin-bottom: 15px; color: #6c757d;">
+                Sites where real-time protection will be automatically enabled
+            </p>
+            
+            <div id="sitesList" class="sites-list">
+                <!-- Sites will be populated here -->
+            </div>
+            
+            <div class="add-site">
+                <input type="text" id="newSite" placeholder="Enter domain (e.g., twitter.com)">
+                <button onclick="addSite()">Add Site</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>
+                <i class="fas fa-chart-bar"></i>
+                Usage Statistics
+            </h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalAnalyses">0</h3>
+                    <p>Total Analyses</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="safeAnalyses">0</h3>
+                    <p>Safe Content</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="riskAnalyses">0</h3>
+                    <p>Risks Detected</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="avgGuardianScore">0.000</h3>
+                    <p>Avg Guardian Score</p>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="clearHistory()" style="margin-top: 20px;">
+                Clear History
+            </button>
+        </div>
+        
+        <div class="card">
+            <h2>
+                <i class="fas fa-info-circle"></i>
+                About
+            </h2>
+            
+            <p style="margin-bottom: 15px;">
+                <strong>LRDEnE Guardian</strong> is an advanced AI safety and hallucination detection system 
+                that protects you from harmful or inaccurate AI-generated content while browsing the web.
+            </p>
+            
+            <p style="margin-bottom: 15px;">
+                <strong>Version:</strong> 1.0.0<br>
+                <strong>Author:</strong> LRDEnE Technology Team<br>
+                <strong>License:</strong> Proprietary
+            </p>
+            
+            <p>
+                <a href="https://github.com/LOrdEnRYQuE/lrden-guardian" target="_blank">
+                    <i class="fab fa-github"></i> GitHub Repository
+                </a>
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2026 LRDEnE. All rights reserved.</p>
+            <p>
+                Need help? 
+                <a href="mailto:tech@lrden.com">Contact Support</a>
+            </p>
+        </div>
+    </div>
+    
+    <script src="options.js"></script>
+</body>
+</html>
