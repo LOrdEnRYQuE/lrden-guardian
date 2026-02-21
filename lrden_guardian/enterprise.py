@@ -19,6 +19,7 @@ from pathlib import Path
 from .guardian import LRDEnEGuardian, LRDEnEGuardianResult
 from .licensing import license_manager, LicenseTier, FeatureType
 from .analytics import AnalyticsEngine
+from .db_adapter import db_adapter
 
 @dataclass
 class EnterpriseConfig:
@@ -129,8 +130,16 @@ class LRDEnEEnterprise:
         metadata = metadata or {}
         
         try:
+            # Check Commercial Usage Limits
+            usage_check = license_manager.check_usage_limits(self.license_key, "analyses_per_month", 0)
+            if not usage_check["allowed"]:
+                raise ValueError(f"Monthly analysis limit reached for {usage_check['tier']} tier")
+            
             # Perform analysis
             result = self.guardian.analyze_content(content, context)
+            
+            # Log usage to commercial DB
+            db_adapter.log_usage(self.license_key, "analyses_per_month", 1)
             
             # Calculate processing time
             processing_time = time.time() - start_time

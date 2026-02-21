@@ -14,6 +14,7 @@ import time
 from typing import Dict, List, Optional, Any
 from enum import Enum
 from dataclasses import dataclass
+from .db_adapter import db_adapter
 
 class LicenseTier(Enum):
     """LRDEnE Guardian license tiers"""
@@ -55,9 +56,8 @@ class LRDEnELicenseManager:
     """Manage LRDEnE Guardian licensing and features"""
     
     def __init__(self):
-        self.license_cache = {}
-        self.feature_matrix = self._build_feature_matrix()
         self.pricing_tiers = self._build_pricing_tiers()
+        self.feature_matrix = self._build_feature_matrix()
     
     def _build_feature_matrix(self) -> Dict[LicenseTier, List[FeatureType]]:
         """Build feature availability matrix"""
@@ -154,8 +154,8 @@ class LRDEnELicenseManager:
         # Format license key
         license_key = f"LRDEN-{tier.value.upper()}-{license_hash[:16].upper()}"
         
-        # Cache license
-        self.license_cache[license_key] = LicenseInfo(
+        # Create LicenseInfo object
+        license_info = LicenseInfo(
             tier=tier,
             license_key=license_key,
             expires_at=license_data["expires_at"],
@@ -166,19 +166,30 @@ class LRDEnELicenseManager:
             contact=contact
         )
         
+        # Persistent storage
+        db_adapter.save_license(license_info)
+        
         return license_key
     
     def validate_license(self, license_key: str) -> Optional[LicenseInfo]:
         """Validate license key and return license info"""
         
-        # Check cache first
-        if license_key in self.license_cache:
-            license_info = self.license_cache[license_key]
+        # Try database first
+        db_data = db_adapter.get_license(license_key)
+        if db_data:
+            license_info = LicenseInfo(
+                tier=LicenseTier(db_data['tier']),
+                license_key=db_data['license_key'],
+                expires_at=db_data['expires_at'],
+                features=[FeatureType(f) for f in db_data['features']],
+                usage_limits=db_data['usage_limits'],
+                created_at=db_data['created_at'],
+                company=db_data['company'],
+                contact=db_data['contact']
+            )
             if self._is_license_valid(license_info):
                 return license_info
-            else:
-                del self.license_cache[license_key]
-                return None
+            return None
         
         # Parse license key format
         if not license_key.startswith("LRDEN-"):
@@ -246,6 +257,9 @@ class LRDEnELicenseManager:
         
         limits = license_info.usage_limits
         limit = limits.get(usage_type, 0)
+        
+        # Get actual current usage from DB
+        current_usage = db_adapter.get_aggregated_usage(license_key, action=usage_type)
         
         if limit == "unlimited":
             return {

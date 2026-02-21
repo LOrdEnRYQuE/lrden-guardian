@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRDEnE Guardian | Enterprise AI Safety & Integrity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        .hero-gradient {
+            background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent),
+                        radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.1), transparent);
+        }
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .premium-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .premium-card:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 hero-gradient min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="h-8 w-8 bg-emerald-500 rounded-lg flex items-center justify-center font-bold text-slate-950">G</div>
+                <span class="text-xl font-bold tracking-tight">LRDEnE <span class="text-emerald-500">Guardian</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+                <a href="#features" class="hover:text-emerald-400 transition">Features</a>
+                <a href="#pricing" class="hover:text-emerald-400 transition">Pricing</a>
+                <a href="/docs" class="hover:text-emerald-400 transition">Docs</a>
+            </div>
+            <div class="flex gap-4">
+                <button class="text-sm font-semibold hover:text-emerald-400 transition">Login</button>
+                <button class="px-5 py-2 bg-emerald-500 text-slate-950 text-sm font-bold rounded-full hover:bg-emerald-400 transition">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <span class="px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6 inline-block">
+                Trusted by 500+ Enterprise Teams
+            </span>
+            <h1 class="text-6xl md:text-7xl font-bold mb-8 leading-tight">
+                Eliminate <span class="text-sky-400">AI Hallucinations</span><br>With Enterprise Integrity
+            </h1>
+            <p class="text-slate-400 text-xl max-w-2xl mx-auto mb-12">
+                LRDEnE Guardian is the industry's most advanced safety layer for LLMs, providing real-time factual verification, security auditing, and regional compliance.
+            </p>
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                <button class="px-8 py-4 bg-emerald-500 text-slate-950 font-bold rounded-2xl hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20">
+                    Deploy Guardian Now
+                </button>
+                <button class="px-8 py-4 bg-slate-800 border border-slate-700 font-bold rounded-2xl hover:bg-slate-700 transition">
+                    Book an Enterprise Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-16">Plans for Every Scale</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Free -->
+                <div class="premium-card p-8 rounded-3xl">
+                    <h3 class="text-xl font-bold mb-2">Individual</h3>
+                    <p class="text-slate-500 text-sm mb-6">For hobbyists and explorers</p>
+                    <div class="text-4xl font-bold mb-6">$0<span class="text-lg text-slate-500">/mo</span></div>
+                    <ul class="space-y-4 text-sm text-slate-400 mb-8">
+                        <li class="flex items-center gap-2">✅ 1,000 Analyses/mo</li>
+                        <li class="flex items-center gap-2">✅ Standard Validations</li>
+                        <li class="flex items-center gap-2">✅ Community Support</li>
+                    </ul>
+                    <button class="w-full py-3 border border-slate-700 rounded-xl hover:bg-slate-800 transition">Current Plan</button>
+                </div>
+                <!-- Pro -->
+                <div class="premium-card p-8 rounded-3xl border-emerald-500/30 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-emerald-500 text-slate-950 px-4 py-1 text-xs font-bold uppercase tracking-widest">Growth</div>
+                    <h3 class="text-xl font-bold mb-2">Professional</h3>
+                    <p class="text-slate-500 text-sm mb-6">For scaling startups and devs</p>
+                    <div class="text-4xl font-bold mb-6">$99<span class="text-lg text-slate-500">/mo</span></div>
+                    <ul class="space-y-4 text-sm text-slate-400 mb-8">
+                        <li class="flex items-center gap-2">✅ 100k Analyses/mo</li>
+                        <li class="flex items-center gap-2">✅ Advanced Analytics</li>
+                        <li class="flex items-center gap-2">✅ API & Batch Access</li>
+                        <li class="flex items-center gap-2">✅ Priority Support</li>
+                    </ul>
+                    <button class="w-full py-3 bg-emerald-500 text-slate-950 font-bold rounded-xl hover:bg-emerald-400 transition">Get Started</button>
+                </div>
+                <!-- Enterprise -->
+                <div class="premium-card p-8 rounded-3xl">
+                    <h3 class="text-xl font-bold mb-2">Enterprise</h3>
+                    <p class="text-slate-500 text-sm mb-6">Full security and compliance</p>
+                    <div class="text-4xl font-bold mb-6">$999<span class="text-lg text-slate-500">/mo</span></div>
+                    <ul class="space-y-4 text-sm text-slate-400 mb-8">
+                        <li class="flex items-center gap-2">✅ Unlimited Analyses</li>
+                        <li class="flex items-center gap-2">✅ On-Premise Deployment</li>
+                        <li class="flex items-center gap-2">✅ White-Labeling</li>
+                        <li class="flex items-center gap-2">✅ Dedicated Manager</li>
+                    </ul>
+                    <button class="w-full py-3 border border-slate-700 rounded-xl hover:bg-slate-800 transition">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 px-6 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <span class="text-slate-500 text-sm">© 2026 LRDEnE Technology Group. All rights reserved.</span>
+            <div class="flex gap-8 text-sm text-slate-500">
+                <a href="#" class="hover:text-emerald-400">Privacy</a>
+                <a href="#" class="hover:text-emerald-400">Terms</a>
+                <a href="#" class="hover:text-emerald-400">Security</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

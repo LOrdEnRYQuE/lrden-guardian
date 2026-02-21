@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation & Sandbox | LRDEnE Guardian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+        .sidebar { background: #0f172a; border-right: 1px solid rgba(255,255,255,0.05); }
+        .sandbox-panel { background: #020617; border: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex">
+    <!-- Sidebar -->
+    <nav class="w-72 sidebar min-h-screen p-8 hidden lg:block">
+        <div class="flex items-center gap-2 mb-12">
+            <div class="h-6 w-6 bg-emerald-500 rounded flex items-center justify-center font-bold text-slate-950 text-xs">G</div>
+            <span class="font-bold">Guardian API</span>
+        </div>
+        <div class="space-y-8">
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Introduction</h4>
+                <div class="space-y-2 text-sm">
+                    <a href="#" class="block text-emerald-400">Getting Started</a>
+                    <a href="#" class="block text-slate-400 hover:text-emerald-400">Authentication</a>
+                    <a href="#" class="block text-slate-400 hover:text-emerald-400">Rate Limits</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Endpoints</h4>
+                <div class="space-y-2 text-sm">
+                    <a href="#" class="block text-slate-400 hover:text-emerald-400">POST /analyze</a>
+                    <a href="#" class="block text-slate-400 hover:text-emerald-400">POST /batch-analyze</a>
+                    <a href="#" class="block text-slate-400 hover:text-emerald-400">GET /license-info</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-12 overflow-y-auto">
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold mb-4">Analyze Content</h1>
+            <p class="text-slate-400 text-lg">Perform a comprehensive safety analysis on text content using the LRDEnE core engine.</p>
+        </header>
+
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="px-3 py-1 bg-emerald-500 text-slate-950 text-xs font-bold rounded">POST</span>
+                <code class="text-emerald-400">/v1/analyze</code>
+            </div>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-12">
+                <!-- Sandbox -->
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Interactive Sandbox</h3>
+                    <div class="sandbox-panel rounded-2xl p-6">
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-2">API Key</label>
+                            <input type="text" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-sm focus:border-emerald-500 outline-none" placeholder="LRDEN-PRO-XXXX">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Request Body</label>
+                            <textarea class="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-sm font-mono h-40 focus:border-emerald-500 outline-none">{
+  "content": "The moon is made of blue cheese.",
+  "context": { "user_id": "test_123" },
+  "locale": "en"
+}</textarea>
+                        </div>
+                        <button class="w-full py-3 bg-emerald-500 text-slate-950 font-bold rounded-xl hover:bg-emerald-400 transition">
+                            Run Request
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Documentation -->
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Response Structure</h3>
+                    <pre class="bg-slate-900/50 p-6 rounded-2xl text-sm leading-relaxed border border-white/5">{
+  "is_safe": false,
+  "risk_level": "medium",
+  "confidence_score": 0.85,
+  "guardian_score": 0.92,
+  "analysis_summary": "Detected potential factual hallucination...",
+  "recommendations": [
+    "Verify with LRDEnE verified sources",
+    "Check contextual coherence"
+  ],
+  "timestamp": "2026-02-21T13:50:00Z"
+}</pre>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
