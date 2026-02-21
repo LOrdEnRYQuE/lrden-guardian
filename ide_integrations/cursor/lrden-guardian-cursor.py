@@ -236,7 +236,7 @@ class CursorIntegrationManager:
             return result
             
         except Exception as e:
-            return {{"error": f"Analysis failed: {{str(e)}}"}
+            return {"error": f"Analysis failed: {str(e)}"}
     
     def monitor_cursor_workspace(self):
         """Monitor Cursor workspace for changes"""
@@ -249,7 +249,7 @@ class CursorIntegrationManager:
             print("❌ Could not determine Cursor workspace directory")
             return
         
-        print(f"📁 Monitoring: {{workspace_dir}}")
+        print(f"📁 Monitoring: {workspace_dir}")
         
         # Monitor for file changes
         try:
@@ -266,22 +266,22 @@ class CursorIntegrationManager:
                 
                 def handle_file_change(self, file_path):
                     if self.manager.should_analyze_file(file_path):
-                        print(f"🔍 Analyzing: {{file_path}}")
+                        print(f"🔍 Analyzing: {file_path}")
                         result = self.manager.analyze_file(file_path)
                         self.display_result(result, file_path)
                 
                 def display_result(self, result, file_path):
                     if "error" in result:
-                        print(f"❌ {{result['error']}}")
+                        print(f"❌ {result['error']}")
                     elif result.get("requires_review", False):
-                        print(f"⚠️ {{file_path}} - REQUIRES REVIEW")
-                        print(f"   Risk: {{result.get('risk_level', 'unknown')}}")
-                        print(f"   Score: {{result.get('guardian_score', 0):.3f}}")
+                        print(f"⚠️ {file_path} - REQUIRES REVIEW")
+                        print(f"   Risk: {result.get('risk_level', 'unknown')}")
+                        print(f"   Score: {result.get('guardian_score', 0):.3f}")
                         if result.get("detected_issues"):
                             for issue in result.get("detected_issues", [])[:3]:
-                                print(f"   • {{issue}}")
+                                print(f"   • {issue}")
                     else:
-                        print(f"✅ {{file_path}} - SAFE")
+                        print(f"✅ {file_path} - SAFE")
             
             observer = watchdog.observers.Observer()
             event_handler = GuardianFileHandler(self)
@@ -293,7 +293,7 @@ class CursorIntegrationManager:
                     time.sleep(1)
             except KeyboardInterrupt:
                 observer.stop()
-                print("\\n🛡️ Monitoring stopped")
+                print("\n🛡️ Monitoring stopped")
                 
         except ImportError:
             print("❌ Watchdog library not found. Install with: pip install watchdog")
@@ -425,3 +425,4 @@ def main():
 if __name__ == "__main__":
     main()
 '''
+

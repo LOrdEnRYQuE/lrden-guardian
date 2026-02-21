@@ -30,7 +30,7 @@ class LRDEnEGuardianExtension {
     private decorationTypes: vscode.TextEditorDecorationType[] = [];
     private outputChannel: vscode.OutputChannel;
     private statusBarItem: vscode.StatusBarItem;
-    private analysisProvider: AnalysisProvider;
+    public analysisProvider: AnalysisProvider;
 
     constructor() {
         this.config = this.loadConfiguration();
@@ -83,7 +83,7 @@ class LRDEnEGuardianExtension {
         }));
     }
 
-    private registerCommands() {
+    public registerCommands() {
         const commands = [
             vscode.commands.registerCommand('lrdenGuardian.analyzeSelection', () => this.analyzeSelection()),
             vscode.commands.registerCommand('lrdenGuardian.analyzeFile', () => this.analyzeFile()),
@@ -268,7 +268,7 @@ class LRDEnEGuardianExtension {
         try {
             const cacheKey = `${content.substring(0, 100)}_${JSON.stringify(context)}`;
             if (this.analysisCache.has(cacheKey)) {
-                return this.analysisCache.get(cacheKey);
+                return this.analysisCache.get(cacheKey) || null;
             }
 
             const response = await axios.post(`${this.config.apiEndpoint}/analyze`, {
@@ -293,7 +293,9 @@ class LRDEnEGuardianExtension {
                 // Limit cache size
                 if (this.analysisCache.size > 1000) {
                     const firstKey = this.analysisCache.keys().next().value;
-                    this.analysisCache.delete(firstKey);
+                    if (firstKey) {
+                        this.analysisCache.delete(firstKey);
+                    }
                 }
                 
                 return analysis;
@@ -324,7 +326,7 @@ class LRDEnEGuardianExtension {
             decorationType = this.decorationTypes[0];
             message = '✅ Safe content';
         } else {
-            const riskLevels = { 'low': 1, 'medium': 2, 'high': 2, 'critical': 2 };
+            const riskLevels: { [key: string]: number } = { 'low': 1, 'medium': 2, 'high': 2, 'critical': 2 };
             const decorationIndex = riskLevels[analysis.risk_level] || 2;
             decorationType = this.decorationTypes[decorationIndex];
             message = `⚠️ ${analysis.risk_level.toUpperCase()} risk detected`;
