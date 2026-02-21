@@ -1,0 +1,26 @@
+# LRDEnE Guardian Configuration
+version: 1.0.0
+
+# Analysis Settings
+analysis:
+  confidence_threshold: 0.7
+  risk_threshold: 0.6
+  enable_deep_analysis: true
+  
+# Performance Settings
+performance:
+  max_processing_time: 10.0
+  enable_caching: true
+  cache_size: 1000
+  
+# Security Settings
+security:
+  enable_content_filter: true
+  scan_for_pii: true
+  check_for_malicious_content: true
+  
+# Output Settings
+output:
+  include_recommendations: true
+  include_confidence_breakdown: true
+  format_output: true
