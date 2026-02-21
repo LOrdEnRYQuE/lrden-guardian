@@ -1,0 +1,225 @@
+{
+  "name": "lrden-guardian-vscode",
+  "displayName": "LRDEnE Guardian - AI Safety for VS Code",
+  "description": "Real-time AI safety and hallucination detection for code and documentation",
+  "version": "1.0.0",
+  "publisher": "LRDEnE",
+  "author": "LRDEnE Technology Team",
+  "license": "Proprietary",
+  "homepage": "https://github.com/LOrdEnRYQuE/lrden-guardian",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LOrdEnRYQuE/lrden-guardian.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LOrdEnRYQuE/lrden-guardian/issues"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other",
+    "Linters",
+    "Snippets",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "ai",
+    "safety",
+    "hallucination",
+    "code",
+    "documentation",
+    "lrden",
+    "guardian",
+    "security",
+    "validation"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:java",
+    "onLanguage:cpp",
+    "onLanguage:c",
+    "onLanguage:go",
+    "onLanguage:rust",
+    "onLanguage:php",
+    "onLanguage:ruby",
+    "onLanguage:markdown"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "lrdenGuardian.analyzeSelection",
+        "title": "Analyze with LRDEnE Guardian",
+        "category": "LRDEnE Guardian"
+      },
+      {
+        "command": "lrdenGuardian.analyzeFile",
+        "title": "Analyze Current File",
+        "category": "LRDEnE Guardian"
+      },
+      {
+        "command": "lrdenGuardian.analyzeProject",
+        "title": "Analyze Project",
+        "category": "LRDEnE Guardian"
+      },
+      {
+        "command": "lrdenGuardian.toggleAutoAnalysis",
+        "title": "Toggle Auto Analysis",
+        "category": "LRDEnE Guardian"
+      },
+      {
+        "command": "lrdenGuardian.showSettings",
+        "title": "Settings",
+        "category": "LRDEnE Guardian"
+      },
+      {
+        "command": "lrdenGuardian.showDashboard",
+        "title": "Open Dashboard",
+        "category": "LRDEnE Guardian"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "lrdenGuardian.analyzeSelection",
+          "group": "lrden-guardian",
+          "when": "editorHasSelection"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "lrdenGuardian.analyzeFile",
+          "group": "lrden-guardian",
+          "when": "resourceExtname"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "lrdenGuardian.analyzeFile",
+          "group": "lrden-guardian",
+          "when": "resourceExtname"
+        },
+        {
+          "command": "lrdenGuardian.analyzeProject",
+          "group": "lrden-guardian",
+          "when": "resourceIsFolder"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "lrdenGuardian.analyzeSelection",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "lrdenGuardian.analyzeFile",
+          "when": "resourceExtname"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "LRDEnE Guardian",
+      "properties": {
+        "lrdenGuardian.apiEndpoint": {
+          "type": "string",
+          "default": "http://localhost:5001",
+          "description": "LRDEnE Guardian API endpoint URL"
+        },
+        "lrdenGuardian.autoAnalysis": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic analysis of AI-generated content"
+        },
+        "lrdenGuardian.analysisDelay": {
+          "type": "number",
+          "default": 1000,
+          "description": "Delay in milliseconds before auto-analysis"
+        },
+        "lrdenGuardian.showDecorations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show safety indicators in the editor"
+        },
+        "lrdenGuardian.showNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notifications for risky content"
+        },
+        "lrdenGuardian.riskThreshold": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "default": "medium",
+          "description": "Risk level threshold for warnings"
+        },
+        "lrdenGuardian.supportedLanguages": {
+          "type": "array",
+          "default": ["python", "javascript", "typescript", "java", "cpp", "c", "go", "rust", "php", "ruby", "markdown"],
+          "description": "Programming languages to analyze"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "lrden-guardian",
+          "title": "LRDEnE Guardian",
+          "icon": "resources/icons/guardian.svg"
+        }
+      ]
+    },
+    "views": {
+      "lrden-guardian": [
+        {
+          "id": "lrden-guardian.analysis",
+          "name": "Analysis Results",
+          "when": "lrdenGuardian.hasAnalysis"
+        },
+        {
+          "id": "lrden-guardian.history",
+          "name": "Analysis History"
+        },
+        {
+          "id": "lrden-guardian.settings",
+          "name": "Settings"
+        }
+      ]
+    },
+    "icons": {
+      "safe": {
+        "dark": "resources/icons/safe-dark.svg",
+        "light": "resources/icons/safe-light.svg"
+      },
+      "warning": {
+        "dark": "resources/icons/warning-dark.svg",
+        "light": "resources/icons/warning-light.svg"
+      },
+      "danger": {
+        "dark": "resources/icons/danger-dark.svg",
+        "light": "resources/icons/danger-light.svg"
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4",
+    "vscode-test": "^1.6.1"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "debounce": "^1.2.1"
+  }
+}
